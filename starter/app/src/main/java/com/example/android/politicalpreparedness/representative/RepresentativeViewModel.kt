@@ -2,7 +2,7 @@ package com.example.android.politicalpreparedness.representative
 
 import android.app.Application
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.example.android.politicalpreparedness.base.BaseViewModel
 import com.example.android.politicalpreparedness.network.models.Address
@@ -12,19 +12,27 @@ import com.example.android.politicalpreparedness.representative.model.Representa
 import kotlinx.coroutines.launch
 
 class RepresentativeViewModel(
-    private val app: Application,
-    private val repository: ElectionRepository
+    app: Application,
+    private val repository: ElectionRepository,
+    savedStateHandle: SavedStateHandle
 ) : BaseViewModel(app) {
 
-    private val _representatives = MutableLiveData<List<Representative>>()
+    private val REPRESENTATIVE_LIST = "REPRESENTATIVE_LIST"
+    private val ADDRESS_LINE_1 = "ADDRESS_LINE_1"
+    private val ADDRESS_LINE_2 = "ADDRESS_LINE_2"
+    private val CITY = "CITY"
+    private val STATE = "STATE"
+    private val ZIP = "ZIP"
+
+    private val _representatives = savedStateHandle.getLiveData<List<Representative>>(REPRESENTATIVE_LIST)
     val representatives: LiveData<List<Representative>>
         get() = _representatives
 
-    val addressLine1 = MutableLiveData<String>()
-    val addressLine2 = MutableLiveData<String>()
-    val city = MutableLiveData<String>()
-    val state = MutableLiveData<String>()
-    val zip = MutableLiveData<String>()
+    val addressLine1 = savedStateHandle.getLiveData<String>(ADDRESS_LINE_1)
+    val addressLine2 = savedStateHandle.getLiveData<String>(ADDRESS_LINE_2)
+    val city = savedStateHandle.getLiveData<String>(CITY)
+    val state = savedStateHandle.getLiveData<String>(STATE)
+    val zip = savedStateHandle.getLiveData<String>(ZIP)
 
     /**
      *  The following code will prove helpful in constructing a representative from the API. This code combines the two nodes of the RepresentativeResponse into a single official :
@@ -57,7 +65,7 @@ class RepresentativeViewModel(
         }
     }
 
-    private fun getCurrentAddress() = Address(
+    fun getCurrentAddress() = Address(
         addressLine1.value.toString(),
         addressLine2.value.toString(),
         city.value.toString(),
@@ -67,7 +75,7 @@ class RepresentativeViewModel(
 
     fun updateAddress(address: Address) {
         addressLine1.value = address.line1
-        addressLine2.value = address.line2 ?: ""
+        addressLine2.value = address.line2
         city.value = address.city
         state.value = address.state
         zip.value = address.zip

@@ -1,6 +1,7 @@
 package com.example.android.politicalpreparedness
 
 import android.app.Application
+import androidx.lifecycle.SavedStateHandle
 import com.example.android.politicalpreparedness.database.ElectionDatabase
 import com.example.android.politicalpreparedness.election.ElectionsViewModel
 import com.example.android.politicalpreparedness.election.VoterInfoViewModel
@@ -30,7 +31,7 @@ class MyApp : Application() {
                 VoterInfoViewModel(this@MyApp, get(), get())
             }
             viewModel {
-                RepresentativeViewModel(this@MyApp, get())
+                RepresentativeViewModel(this@MyApp, get(), get())
             }
             single { ElectionRepository(get(), get()) }
             single { ElectionDatabase.getInstance(get()).electionDao }

@@ -4,21 +4,16 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.location.Geocoder
 import android.location.Location
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.Toast
-import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
@@ -28,18 +23,17 @@ import com.example.android.politicalpreparedness.base.BaseFragment
 import com.example.android.politicalpreparedness.databinding.FragmentRepresentativeBinding
 import com.example.android.politicalpreparedness.network.models.Address
 import com.example.android.politicalpreparedness.representative.adapter.RepresentativeListAdapter
-import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.Geofence
-import com.google.android.gms.location.GeofencingRequest
-import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
-import com.google.android.gms.location.LocationSettingsRequest
 import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.Locale
 
 class DetailFragment : BaseFragment() {
+
+    companion object {
+        const val MOTION_LAYOUT_STATE = "MOTION_LAYOUT_STATE"
+    }
 
     override val viewModel: RepresentativeViewModel by viewModel()
     private lateinit var binding: FragmentRepresentativeBinding
@@ -61,6 +55,10 @@ class DetailFragment : BaseFragment() {
         binding = FragmentRepresentativeBinding.inflate(inflater)
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
+
+        savedInstanceState?.run {
+            binding.layoutRepresentativeMotion.transitionState = this.getBundle(MOTION_LAYOUT_STATE)
+        }
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
 
@@ -99,9 +97,16 @@ class DetailFragment : BaseFragment() {
             }
         }
 
+
         return binding.root
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.run {
+            putBundle(MOTION_LAYOUT_STATE, binding.layoutRepresentativeMotion.transitionState)
+        }
+        super.onSaveInstanceState(outState)
+    }
 
     private fun checkLocationPermissions(): Boolean {
         return if (isPermissionGranted()) {
