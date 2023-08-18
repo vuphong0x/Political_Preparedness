@@ -68,10 +68,11 @@ dependencies {
     implementation "com.squareup.moshi:moshi-adapters:$version_moshi"
 
     // Glide
-    // TODO: Add Glide Implementation
+    implementation 'com.github.bumptech.glide:glide:4.15.1'
 
     // Room
     implementation "androidx.room:room-runtime:$version_room"
+    implementation "androidx.room:room-ktx:$version_room"
     kapt "androidx.room:room-compiler:$version_room"
 
     // Location
@@ -79,4 +80,8 @@ dependencies {
 
     // Timber
     implementation "com.jakewharton.timber:timber:$version_timber"
+
+    // Koin
+    implementation "io.insert-koin:koin-android:$version_koin"
+
 }

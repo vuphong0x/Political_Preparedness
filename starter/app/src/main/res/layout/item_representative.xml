@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="representative"
+            type="com.example.android.politicalpreparedness.representative.model.Representative" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/default_padding">
+
+        <ImageView
+            android:id="@+id/imageRepresentative"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_profile"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:contentDescription="@null"
+            app:profileImage="@{representative.official.photoUrl}" />
+
+        <TextView
+            android:id="@+id/textOffice"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/_16sp"
+            android:textStyle="bold"
+            android:text="@{representative.office.name}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/imageRepresentative"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="President of the United States" />
+
+
+        <TextView
+            android:id="@+id/textName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/_14sp"
+            android:textStyle="bold"
+            android:text="@{representative.official.name}"
+            app:layout_constraintStart_toStartOf="@id/textOffice"
+            app:layout_constraintTop_toBottomOf="@id/textOffice"
+            tools:text="Donald J. Trump" />
+
+        <TextView
+            android:id="@+id/textParty"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/_14sp"
+            android:text="@{representative.official.party}"
+            app:layout_constraintStart_toStartOf="@id/textOffice"
+            app:layout_constraintTop_toBottomOf="@id/textName"
+            tools:text="Republican Party" />
+
+        <ImageView
+            android:id="@+id/facebookIcon"
+            android:layout_width="@dimen/image_social_size"
+            android:layout_height="@dimen/image_social_size"
+            android:layout_marginEnd="@dimen/small_margin"
+            android:contentDescription="@string/facebook"
+            android:src="@drawable/ic_facebook"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/twitterIcon"
+            app:layout_constraintTop_toTopOf="@id/twitterIcon" />
+
+        <ImageView
+            android:id="@+id/twitterIcon"
+            android:layout_width="@dimen/image_social_size"
+            android:layout_height="@dimen/image_social_size"
+            android:layout_marginEnd="@dimen/small_margin"
+            android:contentDescription="@string/twitter"
+            android:src="@drawable/ic_twitter"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/wwwIcon"
+            app:layout_constraintTop_toTopOf="@id/textName" />
+
+        <ImageView
+            android:id="@+id/wwwIcon"
+            android:layout_width="@dimen/image_social_size"
+            android:layout_height="@dimen/image_social_size"
+            android:layout_marginEnd="@dimen/small_margin"
+            android:src="@drawable/ic_www"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="@id/facebookIcon" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

@@ -1,16 +1,64 @@
 package com.example.android.politicalpreparedness.election
 
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
+import com.example.android.politicalpreparedness.R
+import com.example.android.politicalpreparedness.base.BaseViewModel
+import com.example.android.politicalpreparedness.base.NavigationCommand
+import com.example.android.politicalpreparedness.network.models.Election
+import com.example.android.politicalpreparedness.network.models.ElectionResponse
+import com.example.android.politicalpreparedness.repository.ElectionRepository
+import com.example.android.politicalpreparedness.repository.Result
+import kotlinx.coroutines.launch
+import timber.log.Timber
 
-//TODO: Construct ViewModel and provide election datasource
-class ElectionsViewModel: ViewModel() {
+class ElectionsViewModel(
+    app: Application,
+    private val electionRepository: ElectionRepository
+) : BaseViewModel(app) {
 
-    //TODO: Create live data val for upcoming elections
+    private val _upcomingElections = MutableLiveData<List<Election>>()
+    val upcomingElections: MutableLiveData<List<Election>>
+        get() = _upcomingElections
 
-    //TODO: Create live data val for saved elections
+    val savedElections = electionRepository.getAllElections()
 
-    //TODO: Create val and functions to populate live data for upcoming elections from the API and saved elections from local database
+    init {
+        getUpcomingElections()
+    }
 
-    //TODO: Create functions to navigate to saved or upcoming election voter info
+    private fun getUpcomingElections() {
+        showLoading.value = true
+        viewModelScope.launch {
+            try {
+                val result = electionRepository.getElections()
+                showLoading.value = false
+                when (result) {
+                    is Result.Success<ElectionResponse> -> {
+                        _upcomingElections.value = result.data.elections
+                    }
 
+                    is Result.Error -> {
+                        showSnackBarInt.value = R.string.can_not_get_election
+                    }
+                }
+            } catch (e: Exception) {
+                Timber.tag(TAG).e(e)
+            }
+        }
+    }
+
+    fun navigateToVoterInfoScreen(election: Election) {
+        navigationCommand.value = NavigationCommand.To(
+            ElectionsFragmentDirections.actionElectionsFragmentToVoterInfoFragment(
+                election.id,
+                election.division
+            )
+        )
+    }
+
+    companion object {
+        private val TAG = ElectionsViewModel::class.java.simpleName
+    }
 }
